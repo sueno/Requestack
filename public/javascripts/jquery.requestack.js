@@ -3,15 +3,17 @@
 	$.fn.requestack = function(options) {
 
 		var settings = {
-			"name" : "uploadform",
-			"url" : "",
-			"success" : null
+			name : "data",
+			url : "",
+			success : function(){},
+			error : function(){},
+			dataType : "text",
+			ajax : true
 		}
 
 		if (options) {
 			$.extend(settings, options);
 		}
-		console.log("hoge");
 
 		return this.each(function(options) {
 			$(this).on("submit", function() {
@@ -22,14 +24,15 @@
 					for ( var i in param) {
 						formvalue[param[i]["name"]] = param[i]["value"];
 					}
-					var formJ = JSON.stringify(formvalue);
-					console.log(settings);
-					console.log(formJ);
+					var formJ = {};
+					formJ[settings.name] = JSON.stringify(formvalue);
+					$.post(settings.url,formJ,settings.success,settings.dataType);
 				} catch (e) {
 					console.log(e);
 				}
-				return false;
+				return settings.ajax ? false:true;
 			});
 		});
+		
 	}
 })(jQuery);
